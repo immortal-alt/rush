@@ -1,7 +1,8 @@
 use colored::*;
+use std::env;
 use std::fs::{self, File};
 use std::path::Path;
-use std::env;
+use terminal_size::{Width, terminal_size};
 
 pub fn cf(cmd: &[String]) {
     if cmd.len() != 2 {
@@ -88,28 +89,49 @@ pub fn ls(cmd: &[String]) {
                     Ok(dir_entry) => {
                         let name = dir_entry.file_name();
                         file_names.push(name.to_string_lossy().into_owned());
-                        
                     }
                     Err(e) => println!("Error reading directory entry: {}", e),
                 }
             }
 
-            for name in file_names {
-                let path = Path::new(&name);
-                if path.is_file() {
-                    print!("📄 {}  ", name);
-                } else if path.is_dir() {
-                    print!("📁 {}  ", name.blue());
-                } else {
+            if file_names.is_empty() {
+                return;
+            }
+
+            let terminal_width = match terminal_size() {
+                Some((Width(w), _)) => w as usize,
+                None => 80,
+            };
+
+            let max_len = file_names.iter().map(|s| s.len()).max().unwrap_or(0);
+            let padding = 2;
+            let column_width = max_len + padding;
+
+            let columns = std::cmp::max(1, terminal_width / column_width);
+
+            for (i, name) in file_names.iter().enumerate() {
+                if i % columns == 0 && i != 0 {
                     println!();
                 }
+
+                let path = Path::new(name);
+                let padded_name = format!("{:width$}", name, width = column_width);
+
+                if path.is_file() {
+                    print!("📄 {}", padded_name);
+                } else if path.is_dir() {
+                    use ansi_term::Colour::Blue;
+                    print!("📁 {}", Blue.paint(padded_name));
+                } else {
+                    print!("   {}", padded_name);
+                }
             }
-            print!("\n");
+
+            println!();
         }
         Err(e) => println!("ls: cannot access '{}': {}", path, e),
     }
 }
-
 
 pub fn wf(cmd: &[String]) {
     if cmd.len() != 3 {
@@ -121,17 +143,15 @@ pub fn wf(cmd: &[String]) {
 
     match fs::write(file, data) {
         Ok(_) => {}
-        Err(e) => println!("Error writing data to a file: {}", e)
+        Err(e) => println!("Error writing data to a file: {}", e),
     }
 }
 
-pub fn wd() {
-    let pwd = match env::current_dir() {
-        Ok(pwd) => {pwd}
-        Err(e) => { println!("Error in getting current directory: {}", e); return; }
-    };
-
-    println!("{}", pwd.display());
+pub fn wd() -> String {
+    match env::current_dir() {
+        Ok(path) => path.display().to_string(),
+        Err(_) => "?".to_string(),
+    }
 }
 
 pub fn cd(cmd: &[String]) {
@@ -139,8 +159,8 @@ pub fn cd(cmd: &[String]) {
         println!("Usage: cd <path>");
         return;
     }
-    let cd = match env::set_current_dir(&cmd[1]) {
+    let _ = match env::set_current_dir(&cmd[1]) {
         Ok(_) => {}
-        Err(e) => println!("Error in switching directory: {}", e)
+        Err(e) => println!("Error in switching directory: {}", e),
     };
 }
