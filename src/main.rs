@@ -1,6 +1,5 @@
 mod files;
 mod rconfig;
-mod red;
 mod rfetch;
 mod root;
 mod root_macros;
@@ -10,29 +9,29 @@ mod utils;
 
 use colored::*;
 use std::{
-    env,
+    // env,
     io::Write,
-    path::{Path, PathBuf},
+    // path::{Path, PathBuf},
 };
 
-fn shorten_path(path: &Path) -> String {
-    match env::var("HOME") {
-        Ok(home_dir) => {
-            let home_path = PathBuf::from(&home_dir);
-            if path.starts_with(&home_path) {
-                let mut shortened = String::from("~");
-                if let Some(relative) = path.strip_prefix(&home_path).ok() {
-                    shortened.push_str("/");
-                    shortened.push_str(&relative.to_string_lossy());
-                }
-                shortened
-            } else {
-                path.to_string_lossy().into_owned()
-            }
-        }
-        Err(_) => path.to_string_lossy().into_owned(),
-    }
-}
+// fn shorten_path(path: &Path) -> String {
+//     match env::var("HOME") {
+//         Ok(home_dir) => {
+//             let home_path = PathBuf::from(&home_dir);
+//             if path.starts_with(&home_path) {
+//                 let mut shortened = String::from("~");
+//                 if let Some(relative) = path.strip_prefix(&home_path).ok() {
+//                     shortened.push_str("/");
+//                     shortened.push_str(&relative.to_string_lossy());
+//                 }
+//                 shortened
+//             } else {
+//                 path.to_string_lossy().into_owned()
+//             }
+//         }
+//         Err(_) => path.to_string_lossy().into_owned(),
+//     }
+// }
 
 fn print_prompt() {
     let username = whoami::username();

@@ -34,7 +34,7 @@ pub fn help_list() {
         // System info
         ("username", "Display current username"),
         ("hostname", "Display system hostname"),
-        ("os", "Show operating system info"),
+        ("os", "Show operating system"),
         ("time", "Show local time"),
         ("utc", "Show utc time"),
         // Shell controls

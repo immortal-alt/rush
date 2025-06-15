@@ -21,6 +21,10 @@ pub fn read_command(cmd: Vec<String>) {
         Some("say") => say(&cmd),
         Some("cat") => cat(),
 
+        Some("red") => {
+            println!("In dev, see you soon.")
+        }
+
         // user information
         Some("username") => println!("{}", whoami::username()),
         Some("hostname") => println!("{}", fallible::hostname().unwrap_or("Unknown".to_string())),

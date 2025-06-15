@@ -9,8 +9,8 @@ pub fn rfetch() {
         whoami::Platform::Linux => {
             let mut sys = System::new_all();
             sys.refresh_all();
-            println!("{}", crate::rfetch::icons::tux.bright_blue());
-            println!("{}", "=== Linux System Information ===".bold().underline());
+            println!("{}", crate::rfetch::icons::TUX.bright_red());
+            println!("{}", "=== System Information ===".bold().underline());
             println!("{:<15}: {}", "OS".green(), whoami::distro());
             println!(
                 "{:<15}: {}",
@@ -18,9 +18,12 @@ pub fn rfetch() {
                 fallible::hostname().unwrap_or("Unknown".to_string())
             );
 
-            println!("{}", "─".repeat(40).bright_blue());
+            println!("{}", "─".repeat(40).bright_red());
         }
-        whoami::Platform::Windows => {}
+        whoami::Platform::Windows => {
+            let mut sys = System::new_all();
+            sys.refresh_all();
+        }
         whoami::Platform::MacOS => {}
         _ => {}
     }

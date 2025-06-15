@@ -1,4 +1,4 @@
-pub const tux: &'static str = r#"         _nnnn_
+pub const TUX: &'static str = r#"         _nnnn_
         dGGGGMMb     ,"""""""""""""".
        @p~qp~~qMb    | Linux Rules! |
        M|@||@) M|   _;..............'
